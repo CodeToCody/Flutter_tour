@@ -4,13 +4,20 @@
 - 第一個Flutter應用程式 : https://codelabs.developers.google.com/codelabs/flutter-codelab-first?hl=zh-tw#3
 - What is the Root widget and the Leaf widgets in Flutter? : https://medium.com/@chetan.akarte/the-flutter-foundation-a-comprehensive-guide-for-technical-interviews-and-beyond-book-by-124b3539f02d
 - Markdown 總複習 (Daniel Horng): https://hackmd.io/@HungTengKuei/HyUYP3Lrs
+- Markdown 教程 : https://markdown.com.cn/basic-syntax/images.html
 ## main.dart 範例分析
 
 ### ==> 行前須知 <=======================================
+
+**widget架構**
+
+![Widget 架構](/image_lib/Structure_of_widget.png "Widget_Structure")
+
+
 |keyword|meaning|
 |:--------:|:--------:|
 |```main```|城市入口，用runApp啟動Flutter應用|
-|```MyApp```|整個應用的root組件(?)|
+|```MyApp```|會設定整個應用，包括層級(?)、APP命名、視覺主題等等|
 |```MyAppState```|一個管理狀態類別，繼承 ChangeNotifier |
 |```MyHomePage```|應用的主要頁面，繼承 StatelessWidget |
 
@@ -23,39 +30,11 @@
 ### 程式結構簡介
 
 ```dart
-import 'package:english_words/english_words.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-```
-- runApp() 是 Flutter 提供的函式，將一個 root 組件插進系統，啟動程式
-- MyApp() 是我們定義的 root 組件
-
-```dart
-void main() {
-  runApp(MyApp());
-}
+class MyApp extends StatelessWidget{}
+class MyAppState extends ChangeNotifier{}
+class MyHomePage extends StatelessWidget{}
 ```
 
-```dart
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Namer App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        ),
-        home: MyHomePage(),
-      ),
-    );
-  }
-}
-```
 ```dart
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random(); //WordPair.random()
@@ -66,27 +45,8 @@ class MyAppState extends ChangeNotifier {
   }
 }
 ```
+- ```MyAppState``` 定義了App所需的資料(變數、函式等)
+- ```ChangeNotifier``` 是 Flutter 提供的一個類別，用來讓物件支援通知機制
 
-```dart
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('Test the real time:'),
-          Text(appState.current.asLowerCase),
-          ElevatedButton(
-            onPressed: () {
-              appState.getNext();
-            },
-            child: Text('Next'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-```
+
